@@ -9,10 +9,6 @@ const schema = mongoose.Schema({
     type: String,
     required: true,
   },
-  email: {
-    type: String,
-    required: true,
-  },
   userName: {
     type: String,
     required: true,
@@ -31,6 +27,6 @@ const schema = mongoose.Schema({
   },
 });
 
-const userModel = mongoose.models.User || mongoose.model("User", schema);
+const UserModel = mongoose.models.User || mongoose.model("User", schema);
 
-export default userModel;
+export default UserModel;
