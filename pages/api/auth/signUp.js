@@ -1,6 +1,7 @@
 import UserModel from "@/models/User";
 import { generateToken, hashPassword } from "@/utils/auth";
 import connectToDB from "@/utils/db";
+import { serialize } from "cookie";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -43,7 +44,17 @@ export default async function handler(req, res) {
       role: "USER",
     });
 
-    return res.status(201).json({ message: "User create Successfully" });
+    return res
+      .setHeader(
+        "Set-Cookie",
+        serialize("token", token, {
+          httpOnly: true,
+          maxAge: 60 * 60 * 24,
+          path: "/",
+        })
+      )
+      .status(201)
+      .json({ message: "User create Successfully" });
   } catch (error) {
     return res
       .status(500)
