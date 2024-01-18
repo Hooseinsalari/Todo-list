@@ -35,13 +35,15 @@ export default async function handler(req, res) {
       return res.status(422).json({ message: "User already exist !" });
     }
 
+    const users = await UserModel.find({});
+
     await UserModel.create({
       firstName,
       lastName,
       userName,
       email,
       password: hashedPassword,
-      role: "USER",
+      role: users.length <= 0 ? "ADMIN" : "USER",
     });
 
     return res
