@@ -1,5 +1,5 @@
 import UserModel from "@/models/User";
-import { hashPassword } from "@/utils/auth";
+import { generateToken, hashPassword } from "@/utils/auth";
 import connectToDB from "@/utils/db";
 
 export default async function handler(req, res) {
@@ -23,6 +23,8 @@ export default async function handler(req, res) {
     }
 
     const hashedPassword = await hashPassword(password);
+
+    const token = generateToken({ email });
 
     const isUserExist = await UserModel.findOne({
       $or: [{ email: email }, { userName: userName }],
