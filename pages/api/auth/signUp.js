@@ -1,4 +1,5 @@
 import UserModel from "@/models/User";
+import { hashPassword } from "@/utils/auth";
 import connectToDB from "@/utils/db";
 
 export default async function handler(req, res) {
@@ -21,25 +22,22 @@ export default async function handler(req, res) {
       return res.status(422).json({ message: "Data is not Valid !!!" });
     }
 
+    const hashedPassword = await hashPassword(password);
+
     const isUserExist = await UserModel.findOne({
-      $or: [
-        { email: email },
-        { userName: userName },
-      ],
+      $or: [{ email: email }, { userName: userName }],
     });
 
-    if(isUserExist) {
-      return res.status(422).json({message: "User already exist !"})
+    if (isUserExist) {
+      return res.status(422).json({ message: "User already exist !" });
     }
-
-    console.log("Check user exist:", isUserExist);
 
     await UserModel.create({
       firstName,
       lastName,
       userName,
       email,
-      password,
+      password: hashedPassword,
       role: "USER",
     });
 
