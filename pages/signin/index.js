@@ -1,16 +1,71 @@
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
 
 function Index() {
+  const router = useRouter();
+
+  const [user, setUser] = useState({
+    identifire: "",
+    password: "",
+  });
+
+  const formHandler = (e) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
+  };
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch("/api/auth/signIn", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify(user),
+      });
+
+      if (res.status === 201) {
+        console.log("Sign in successfully");
+
+        setUser({
+          identifire: "",
+          password: "",
+        });
+
+        alert("Welcome back");
+
+        router.replace("/dashboard");
+      } else if (res.status === 401) {
+        alert("Password or User name does not Match");
+      }
+    } catch (error) {
+      console.log("error is:", error);
+    }
+  };
+
   return (
     <div className="box">
       <h1 align="center">Login Form</h1>
-      <form role="form" method="post">
+      <form onSubmit={submitHandler}>
         <div className="inputBox">
-          <input type="text" autoComplete="off" required />
-          <label>Username</label>
+          <input
+            name="identifire"
+            onChange={formHandler}
+            type="text"
+            autoComplete="off"
+            required
+          />
+          <label>Username / Email</label>
         </div>
         <div className="inputBox">
-          <input type="password" autoComplete="off" required />
+          <input
+            name="password"
+            type="password"
+            onChange={formHandler}
+            autoComplete="off"
+            required
+          />
           <label>Password</label>
         </div>
 
