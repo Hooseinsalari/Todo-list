@@ -13,8 +13,6 @@ export default async function handler(req, res) {
 
     const { identifire, password } = req.body;
 
-    console.log(req.body);
-
     const user = await UserModel.findOne({
       $or: [{ userName: identifire }, { email: identifire }],
     });
