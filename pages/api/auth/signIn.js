@@ -11,9 +11,13 @@ export default async function handler(req, res) {
   try {
     connectToDB();
 
-    const { userName, email, password } = req.body;
+    const { identifire, password } = req.body;
 
-    const user = await UserModel.findOne({ $or: [{ userName }, { email }] });
+    console.log(req.body);
+
+    const user = await UserModel.findOne({
+      $or: [{ userName: identifire }, { email: identifire }],
+    });
 
     if (!user) {
       return res.status(401).json({ message: "User not found!" });
