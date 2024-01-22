@@ -36,7 +36,7 @@ function Index() {
 
         alert("Welcome back");
 
-        router.replace("/dashboard");
+        router.replace("/");
       } else if (res.status === 401) {
         alert("Password or User name does not Match");
       }

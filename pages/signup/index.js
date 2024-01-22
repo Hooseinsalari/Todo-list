@@ -42,7 +42,7 @@ function Index() {
 
         alert("user create successfully");
 
-        router.replace("/dashboard");
+        router.replace("/");
       } else if (res.status === 422) {
         alert("User already exist !");
       }
