@@ -1,118 +1,78 @@
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
+import React, { useState, useEffect } from "react";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faSignIn,
-  faSignOut,
-  faSolarPanel,
-  faBars,
-} from "@fortawesome/free-solid-svg-icons";
-import { useRouter } from "next/router";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-function Index() {
-  const router = useRouter()
-
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const res = await fetch("/api/auth/me");
-      if (res.status === 200) {
-        setIsLoggedIn(true);
-        const { data } = await res.json();
-        setUserRole(data.role);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  const signOutHandler = async () => {
-    const res = await fetch("/api/auth/signOut");
-
-    if(res.status === 200) {
-      setIsLoggedIn(false)
-      setUserRole(null)
-
-      alert("User logout successfully")
-
-      router.replace("/")
-    }
-  };
-
+function Todolist() {
   return (
-    <div className="container">
-      <aside className="sidebar">
-        <h3 className="sidebar-title">Sidebar</h3>
+    <>
+      <h1>Next-Todos</h1>
 
-        <ul className="sidebar-links">
-          {isLoggedIn ? (
-            <>
-              {/* User is login */}
-              <li>
-                <Link href="/dashboard">
-                  <span>
-                    <FontAwesomeIcon icon={faBars} />
-                  </span>
-                  Dashboard
-                </Link>
-              </li>
-              <li onClick={signOutHandler}>
-                <Link href="#">
-                  <span>
-                    <FontAwesomeIcon icon={faSignOut} />
-                  </span>
-                  Logout
-                </Link>
-              </li>
-              {/* User is login */}
-            </>
-          ) : (
-            <>
-              {/* User not login */}
-              <li>
-                <Link href="/signin">
-                  <span>
-                    <FontAwesomeIcon icon={faSignIn} />
-                  </span>
-                  Sign in
-                </Link>
-              </li>
-              <li>
-                <Link href="/signup">
-                  <span>
-                    <FontAwesomeIcon icon={faSignIn} />
-                  </span>
-                  Sign up
-                </Link>
-              </li>
+      <div className="alert">
+        <p>⚠ Please add a task first!</p>
+      </div>
 
-              {/* User not login */}
-            </>
-          )}
-
-          {/* User is login & admin */}
-          {userRole === "ADMIN" && (
-            <li>
-              <Link href="/p-admin">
-                <span>
-                  <FontAwesomeIcon icon={faSolarPanel} />
+      <div className="container">
+        <div className="form-container">
+          <div className="add-form">
+            <input
+              id="input"
+              type="text"
+              placeholder="Type your To-Do works..."
+            />
+            <button type="submit" id="submit">
+              ADD
+            </button>
+          </div>
+        </div>
+        <div className="head">
+          <div className="date">
+            <p>{`user.name`}</p>
+          </div>
+          <div className="add">
+            <svg
+              width="2rem"
+              height="2rem"
+              viewBox="0 0 16 16"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"
+              />
+              <path
+                fillRule="evenodd"
+                d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"
+              />
+            </svg>
+          </div>
+          <div className="time">
+            <a href="#">Logout</a>
+          </div>
+        </div>
+        <div className="pad">
+          <div id="todo">
+            <ul id="tasksContainer">
+              <li>
+                <span className="mark">
+                  <input type="checkbox" className="checkbox" />
                 </span>
-                Admin panel
-              </Link>
-            </li>
-          )}
-        </ul>
-        <img className="wave" src="/Images/wave.svg" alt="wave" />
-      </aside>
-      <main className="main"></main>
-    </div>
+                <div className="list">
+                  <p>{`Todo.title`}</p>
+                </div>
+                <span className="delete">
+                  <FontAwesomeIcon icon={faTrash} />
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
-export default Index;
+export default Todolist;

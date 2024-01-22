@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
@@ -70,6 +71,8 @@ function Index() {
         </div>
 
         <input type="submit" className="register-btn" value="Sign In" />
+
+        <Link href="/signup" replace>Don't have an account?</Link>
       </form>
     </div>
   );

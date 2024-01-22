@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
@@ -10,7 +11,7 @@ function Index() {
     password: "",
   });
 
-  const router = useRouter()
+  const router = useRouter();
 
   const formHandler = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -39,11 +40,11 @@ function Index() {
           password: "",
         });
 
-        alert("user create successfully")
+        alert("user create successfully");
 
-        router.replace("/dashboard")
-      } else if(res.status === 422) {
-        alert("User already exist !")
+        router.replace("/dashboard");
+      } else if (res.status === 422) {
+        alert("User already exist !");
       }
     } catch (error) {
       console.log(error.message);
@@ -112,6 +113,8 @@ function Index() {
         </div>
 
         <input type="submit" className="register-btn" value="Sign Up" />
+
+        <Link href="/signin" replace>aleready have account?</Link>
       </form>
     </div>
   );
