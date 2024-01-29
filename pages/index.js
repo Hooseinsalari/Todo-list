@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
@@ -7,6 +7,37 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 function Todolist() {
+  // ** states
+  const [todo, setTodo] = useState({
+    title: "",
+    isComplete: false,
+  });
+
+  // ** ref
+  const formRef = useRef();
+
+  // ** handlers
+  const submitTodoHandler = async (e) => {
+    e.preventDefault();
+
+    const res = await fetch("/api/todos", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify(todo),
+    });
+
+    if (res.status === 201) {
+      console.log("Todo create successfully");
+      setTodo({
+        title: "",
+        isComplete: false,
+      });
+    } else {
+      console.log(res.statusText);
+    }
+  };
   return (
     <>
       <h1>Next-Todos</h1>
@@ -16,9 +47,11 @@ function Todolist() {
       </div>
 
       <div className="container">
-        <div className="form-container">
-          <div className="add-form">
+        <div className="form-container" ref={formRef}>
+          <form className="add-form" onSubmit={submitTodoHandler}>
             <input
+              value={todo.title}
+              onChange={(e) => setTodo({ ...todo, title: e.target.value })}
               id="input"
               type="text"
               placeholder="Type your To-Do works..."
@@ -26,13 +59,22 @@ function Todolist() {
             <button type="submit" id="submit">
               ADD
             </button>
-          </div>
+          </form>
         </div>
         <div className="head">
           <div className="date">
             <p>{`user.name`}</p>
           </div>
-          <div className="add">
+          <div
+            className="add"
+            onClick={() => {
+              if (formRef.current.style.display === "block") {
+                formRef.current.style.display = "none";
+              } else {
+                formRef.current.style.display = "block";
+              }
+            }}
+          >
             <svg
               width="2rem"
               height="2rem"

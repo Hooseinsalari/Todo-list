@@ -4,6 +4,8 @@ import { verifyToken } from "@/utils/auth";
 import connectToDB from "@/utils/db";
 
 export default async function handler(req, res) {
+  connectToDB();
+
   const { token } = req.cookies;
 
   if (!token) {
@@ -24,7 +26,6 @@ export default async function handler(req, res) {
     const todos = await TodoModel.find({ user: user._id });
     return res.json(todos);
   } else if (req.method === "POST") {
-    connectToDB();
     try {
       const { title, isComplete } = req.body;
 
@@ -34,7 +35,8 @@ export default async function handler(req, res) {
         user: user._id,
       };
 
-      await TodoModel.create(newTodo);
+      const todo = await TodoModel.create(newTodo);
+      console.log(todo);
 
       return res.status(201).json({ message: "todo create successfully!" });
     } catch (error) {
