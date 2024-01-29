@@ -23,6 +23,6 @@ const schema = mongoose.Schema(
   }
 );
 
-const TodoModel = mongoose.models.Todo || mongoose.model("todo", schema);
+const TodoModel = mongoose.models.Todo || mongoose.model("Todo", schema);
 
 export default TodoModel;
