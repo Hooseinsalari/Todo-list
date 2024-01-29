@@ -44,6 +44,7 @@ function Todolist({ todos, user }) {
         title: "",
         isComplete: false,
       });
+      refreshData()
     } else {
       console.log(res.statusText);
     }
@@ -54,6 +55,10 @@ function Todolist({ todos, user }) {
     if(res.status === 200) {
       router.reload()
     }
+  }
+
+  const refreshData = () => {
+    router.replace(router.asPath)
   }
 
   return (
