@@ -8,7 +8,7 @@ const hashPassword = async (pass) => {
 
 const generateToken = (data) => {
   const token = sign({ ...data }, process.env.privateKey, {
-    expiresIn: "72h",
+    expiresIn: "7d",
   });
 
   return token;
