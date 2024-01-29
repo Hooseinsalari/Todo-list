@@ -5,13 +5,18 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 config.autoAddCss = false;
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import connectToDB from "@/utils/db";
+import UserModel from "@/models/User";
+import { verifyToken } from "@/utils/auth";
+import TodoModel from "@/models/Todo";
 
-function Todolist() {
+function Todolist({ todos, user }) {
   // ** states
   const [todo, setTodo] = useState({
     title: "",
     isComplete: false,
   });
+  // const [todos, setTodos] = useState([]);
 
   // ** ref
   const formRef = useRef();
@@ -28,6 +33,8 @@ function Todolist() {
       body: JSON.stringify(todo),
     });
 
+    console.log(res);
+
     if (res.status === 201) {
       console.log("Todo create successfully");
       setTodo({
@@ -38,6 +45,7 @@ function Todolist() {
       console.log(res.statusText);
     }
   };
+
   return (
     <>
       <h1>Next-Todos</h1>
@@ -63,7 +71,7 @@ function Todolist() {
         </div>
         <div className="head">
           <div className="date">
-            <p>{`user.name`}</p>
+            <p>{user.firstName} {user.lastName}</p>
           </div>
           <div
             className="add"
@@ -98,17 +106,21 @@ function Todolist() {
         <div className="pad">
           <div id="todo">
             <ul id="tasksContainer">
-              <li>
-                <span className="mark">
-                  <input type="checkbox" className="checkbox" />
-                </span>
-                <div className="list">
-                  <p>{`Todo.title`}</p>
-                </div>
-                <span className="delete">
-                  <FontAwesomeIcon icon={faTrash} />
-                </span>
-              </li>
+              {todos.map((t) => {
+                return (
+                  <li key={t._id}>
+                    <span className="mark">
+                      <input type="checkbox" className="checkbox" />
+                    </span>
+                    <div className="list">
+                      <p>{t.title}</p>
+                    </div>
+                    <span className="delete">
+                      <FontAwesomeIcon icon={faTrash} />
+                    </span>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
@@ -118,3 +130,41 @@ function Todolist() {
 }
 
 export default Todolist;
+
+export async function getServerSideProps({ req }) {
+  connectToDB();
+
+  const { token } = req.cookies;
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/signin",
+      },
+    };
+  }
+
+  const tokenPayload = verifyToken(token);
+
+  if (!tokenPayload) {
+    return {
+      redirect: {
+        destination: "/signin",
+      },
+    };
+  }
+
+  const user = await UserModel.findOne(
+    { email: tokenPayload.email },
+    "firstName lastName"
+  );
+
+  const todos = await TodoModel.find({ user: user._id });
+
+  return {
+    props: {
+      user: JSON.parse(JSON.stringify(user)),
+      todos: JSON.parse(JSON.stringify(todos)),
+    },
+  };
+}
