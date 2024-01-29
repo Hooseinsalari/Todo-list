@@ -40,7 +40,9 @@ export default async function handler(req, res) {
 
       return res.status(201).json({ message: "todo create successfully!" });
     } catch (error) {
-      return res.status(201).json({ message: "todo create has error!", error });
+      return res
+        .status(500)
+        .json({ message: "Unknown Internal Server Error", error });
     }
   } else {
     return false;
