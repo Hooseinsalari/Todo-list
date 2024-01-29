@@ -9,8 +9,11 @@ import connectToDB from "@/utils/db";
 import UserModel from "@/models/User";
 import { verifyToken } from "@/utils/auth";
 import TodoModel from "@/models/Todo";
+import { useRouter } from "next/router";
 
 function Todolist({ todos, user }) {
+  const router = useRouter()
+
   // ** states
   const [todo, setTodo] = useState({
     title: "",
@@ -45,6 +48,13 @@ function Todolist({ todos, user }) {
       console.log(res.statusText);
     }
   };
+
+  const signoutHandler = async () => {
+    const res = await fetch("/api/auth/signOut")
+    if(res.status === 200) {
+      router.reload()
+    }
+  }
 
   return (
     <>
@@ -99,8 +109,8 @@ function Todolist({ todos, user }) {
               />
             </svg>
           </div>
-          <div className="time">
-            <a href="#">Logout</a>
+          <div className="time" onClick={signoutHandler}>
+            <span>Logout</span>
           </div>
         </div>
         <div className="pad">
