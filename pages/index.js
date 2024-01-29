@@ -12,7 +12,7 @@ import TodoModel from "@/models/Todo";
 import { useRouter } from "next/router";
 
 function Todolist({ todos, user }) {
-  const router = useRouter()
+  const router = useRouter();
 
   // ** states
   const [todo, setTodo] = useState({
@@ -36,30 +36,38 @@ function Todolist({ todos, user }) {
       body: JSON.stringify(todo),
     });
 
-    console.log(res);
-
     if (res.status === 201) {
       console.log("Todo create successfully");
       setTodo({
         title: "",
         isComplete: false,
       });
-      refreshData()
+      refreshData();
     } else {
       console.log(res.statusText);
     }
   };
 
   const signoutHandler = async () => {
-    const res = await fetch("/api/auth/signOut")
-    if(res.status === 200) {
-      router.reload()
+    const res = await fetch("/api/auth/signOut");
+    if (res.status === 200) {
+      router.reload();
     }
-  }
+  };
+
+  const deleteHandler = async (id) => {
+    const res = await fetch(`/api/todos/${id}`, {
+      method: "DELETE",
+    });
+
+    if (res.status === 200) {
+      refreshData();
+    }
+  };
 
   const refreshData = () => {
-    router.replace(router.asPath)
-  }
+    router.replace(router.asPath);
+  };
 
   return (
     <>
@@ -86,7 +94,9 @@ function Todolist({ todos, user }) {
         </div>
         <div className="head">
           <div className="date">
-            <p>{user.firstName} {user.lastName}</p>
+            <p>
+              {user.firstName} {user.lastName}
+            </p>
           </div>
           <div
             className="add"
@@ -130,7 +140,10 @@ function Todolist({ todos, user }) {
                     <div className="list">
                       <p>{t.title}</p>
                     </div>
-                    <span className="delete">
+                    <span
+                      className="delete"
+                      onClick={() => deleteHandler(t._id)}
+                    >
                       <FontAwesomeIcon icon={faTrash} />
                     </span>
                   </li>
